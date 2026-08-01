@@ -1,0 +1,209 @@
+// This is your Prisma schema file for Christian Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  USER
+  CREATOR
+  ADMIN
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum BookFormat {
+  EPUB
+  PDF
+  AUDIO
+}
+
+model User {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  passwordHash    String
+  firstName       String?
+  lastName        String?
+  role            Role              @default(USER)
+  isActive        Boolean           @default(true)
+  isEmailVerified Boolean           @default(false)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  refreshTokens   RefreshToken[]
+  profile         UserProfile?
+  articles        Article[]
+  devotionals     Devotional[]
+  libraryEntries  UserLibrary[]
+  readingProgress ReadingProgress[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model UserProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  avatarUrl         String?
+  bio               String?
+  preferredLanguage String   @default("en")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("user_profiles")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRevoked Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@map("refresh_tokens")
+}
+
+model Category {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  slug        String       @unique
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  articles    Article[]
+  devotionals Devotional[]
+  books       Book[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  articles  Article[] @relation("ArticleTags")
+
+  @@map("tags")
+}
+
+model Article {
+  id            String        @id @default(uuid())
+  title         String
+  slug          String        @unique
+  summary       String?
+  content       String        @db.Text
+  coverImageUrl String?
+  status        ContentStatus @default(DRAFT)
+  authorId      String
+  author        User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId    String?
+  category      Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  publishedAt   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  tags          Tag[]         @relation("ArticleTags")
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([status, publishedAt])
+  @@map("articles")
+}
+
+model Devotional {
+  id                 String        @id @default(uuid())
+  title              String
+  slug               String        @unique
+  scriptureReference String
+  scriptureText      String?       @db.Text
+  content            String        @db.Text
+  prayer             String?       @db.Text
+  date               DateTime      @unique @db.Date
+  status             ContentStatus @default(DRAFT)
+  authorId           String
+  author             User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId         String?
+  category           Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([date, status])
+  @@map("devotionals")
+}
+
+model Book {
+  id            String        @id @default(uuid())
+  title         String
+  slug          String        @unique
+  authorName    String
+  publisher     String?
+  isbn          String?       @unique
+  description   String        @db.Text
+  coverImageUrl String?
+  price         Decimal       @default(0.00) @db.Decimal(10, 2)
+  isFree        Boolean       @default(false)
+  format        BookFormat    @default(EPUB)
+  fileUrl       String?
+  status        ContentStatus @default(DRAFT)
+  categoryId    String?
+  category      Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  userLibraries   UserLibrary[]
+  readingProgress ReadingProgress[]
+
+  @@index([categoryId])
+  @@index([status])
+  @@map("books")
+}
+
+model UserLibrary {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookId      String
+  book        Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  purchasedAt DateTime @default(now())
+  pricePaid   Decimal  @default(0.00) @db.Decimal(10, 2)
+
+  @@unique([userId, bookId])
+  @@index([userId])
+  @@map("user_libraries")
+}
+
+model ReadingProgress {
+  id                   String   @id @default(uuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookId               String
+  book                 Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  currentLocation      String?
+  completionPercentage Float    @default(0.0)
+  lastReadAt           DateTime @default(now())
+
+  @@unique([userId, bookId])
+  @@index([userId])
+  @@map("reading_progresses")
+}

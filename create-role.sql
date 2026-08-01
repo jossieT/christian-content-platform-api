@@ -1,0 +1,2 @@
+CREATE ROLE christian WITH LOGIN PASSWORD 'christian';
+ALTER ROLE christian WITH LOGIN;

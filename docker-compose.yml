@@ -1,0 +1,30 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: christian_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2546
+      POSTGRES_DB: christian_platform
+      # Allow password-less connections from host for local development.
+      # Remove this line and use scram-sha-256 in production/staging.
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d christian_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    container_name: christian_redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
