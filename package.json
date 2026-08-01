@@ -2,6 +2,11 @@
   "name": "christian-platform-backend",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "build": "cd api && npm install && npm run build",
+    "start": "cd api && node dist/main.js",
+    "start:prod": "cd api && node dist/main.js"
+  },
   "devDependencies": {
     "prisma": "^6.19.3"
   },
