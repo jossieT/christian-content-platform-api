@@ -55,8 +55,13 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
+  const appUrl =
+    configService.get<string>('APP_URL') ||
+    configService.get<string>('RENDER_EXTERNAL_URL') ||
+    `http://localhost:${port}`;
+
   await app.listen(port);
-  console.log(`🚀 Application listening at http://localhost:${port}/${apiPrefix}`);
-  console.log(`📚 API OpenAPI Documentation: http://localhost:${port}/api/docs`);
+  console.log(`🚀 Application listening at ${appUrl}/${apiPrefix}`);
+  console.log(`📚 API OpenAPI Documentation: ${appUrl}/api/docs`);
 }
 bootstrap();
