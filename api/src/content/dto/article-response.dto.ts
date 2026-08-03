@@ -32,7 +32,8 @@ export class ArticleResponseDto {
   @ApiProperty() createdAt!: Date;
   @ApiProperty() updatedAt!: Date;
   @ApiProperty({ type: AuthorSummaryDto }) author!: AuthorSummaryDto;
-  @ApiPropertyOptional({ type: CategorySummaryDto }) category?: CategorySummaryDto | null;
+  @ApiPropertyOptional({ type: CategorySummaryDto })
+  category?: CategorySummaryDto | null;
   @ApiProperty({ type: [TagSummaryDto] }) tags!: TagSummaryDto[];
 }
 

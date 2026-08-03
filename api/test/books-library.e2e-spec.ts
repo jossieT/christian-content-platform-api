@@ -81,12 +81,16 @@ describe('Books and Library (e2e)', () => {
     );
 
     const detailResponse = await request(app.getHttpServer())
-      .get(`/api/v1/books/${draftBookPayload.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`)
+      .get(
+        `/api/v1/books/${draftBookPayload.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+      )
       .expect(200);
 
     expect(detailResponse.body.status).toBe('DRAFT');
 
-    await prisma.book.deleteMany({ where: { title: { contains: `Draft Book ${unique}` } } });
+    await prisma.book.deleteMany({
+      where: { title: { contains: `Draft Book ${unique}` } },
+    });
     await prisma.category.deleteMany({ where: { id: category.id } });
     await prisma.user.deleteMany({ where: { email: adminEmail } });
   });
@@ -150,7 +154,9 @@ describe('Books and Library (e2e)', () => {
 
     expect(bookshelfResponse.body).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ book: expect.objectContaining({ id: publishedBook.id }) }),
+        expect.objectContaining({
+          book: expect.objectContaining({ id: publishedBook.id }),
+        }),
       ]),
     );
 

@@ -7,7 +7,10 @@ export class CreateCategoryDto {
   @IsNotEmpty()
   name!: string;
 
-  @ApiPropertyOptional({ example: 'Articles and studies exploring Christian theology and core doctrines.' })
+  @ApiPropertyOptional({
+    example:
+      'Articles and studies exploring Christian theology and core doctrines.',
+  })
   @IsString()
   @IsOptional()
   description?: string;

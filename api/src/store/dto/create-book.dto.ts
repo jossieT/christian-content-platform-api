@@ -1,6 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { BookFormat, ContentStatus } from '@prisma/client';
-import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class CreateBookDto {
   @ApiProperty({ example: 'The Pursuit of God' })
@@ -49,7 +57,9 @@ export class CreateBookDto {
   @IsOptional()
   format?: BookFormat;
 
-  @ApiPropertyOptional({ example: 'https://storage.christianplatform.org/books/tozer.epub' })
+  @ApiPropertyOptional({
+    example: 'https://storage.christianplatform.org/books/tozer.epub',
+  })
   @IsString()
   @IsOptional()
   fileUrl?: string;

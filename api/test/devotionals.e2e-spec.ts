@@ -87,10 +87,14 @@ describe('Devotionals (e2e)', () => {
       .expect(200);
 
     expect(publicListResponse.body.items).toEqual(
-      expect.arrayContaining([expect.objectContaining({ title: `Daily Devotional ${unique}` })]),
+      expect.arrayContaining([
+        expect.objectContaining({ title: `Daily Devotional ${unique}` }),
+      ]),
     );
 
-    await prisma.devotional.deleteMany({ where: { title: { contains: `Daily Devotional ${unique}` } } });
+    await prisma.devotional.deleteMany({
+      where: { title: { contains: `Daily Devotional ${unique}` } },
+    });
     await prisma.category.deleteMany({ where: { id: category.id } });
     await prisma.user.deleteMany({ where: { id: user.id } });
   });

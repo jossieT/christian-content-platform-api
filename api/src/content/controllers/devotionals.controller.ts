@@ -9,7 +9,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
@@ -18,7 +23,10 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { ContentQueryDto } from '../dto/content-query.dto';
 import { CreateDevotionalDto } from '../dto/create-devotional.dto';
-import { DevotionalResponseDto, DevotionalsListResponseDto } from '../dto/devotional-response.dto';
+import {
+  DevotionalResponseDto,
+  DevotionalsListResponseDto,
+} from '../dto/devotional-response.dto';
 import { UpdateDevotionalDto } from '../dto/update-devotional.dto';
 import { DevotionalsService } from '../services/devotionals.service';
 
@@ -30,7 +38,11 @@ export class DevotionalsController {
   @Public()
   @Get('today')
   @ApiOperation({ summary: 'Get Today Daily Devotional / Word' })
-  @ApiResponse({ status: 200, type: DevotionalResponseDto, description: 'Today devotional returned successfully' })
+  @ApiResponse({
+    status: 200,
+    type: DevotionalResponseDto,
+    description: 'Today devotional returned successfully',
+  })
   async getToday() {
     return this.devotionalsService.getTodayDevotional();
   }
@@ -38,7 +50,11 @@ export class DevotionalsController {
   @Public()
   @Get('date/:date')
   @ApiOperation({ summary: 'Get devotional by date (Format: YYYY-MM-DD)' })
-  @ApiResponse({ status: 200, type: DevotionalResponseDto, description: 'Devotional for the requested date returned successfully' })
+  @ApiResponse({
+    status: 200,
+    type: DevotionalResponseDto,
+    description: 'Devotional for the requested date returned successfully',
+  })
   async findByDate(@Param('date') date: string) {
     return this.devotionalsService.findByDate(date);
   }
@@ -46,7 +62,11 @@ export class DevotionalsController {
   @Public()
   @Get()
   @ApiOperation({ summary: 'List published devotionals (Public)' })
-  @ApiResponse({ status: 200, type: DevotionalsListResponseDto, description: 'Published devotionals returned successfully' })
+  @ApiResponse({
+    status: 200,
+    type: DevotionalsListResponseDto,
+    description: 'Published devotionals returned successfully',
+  })
   async findAllPublished(@Query() query: ContentQueryDto) {
     return this.devotionalsService.findAll(query, true);
   }
@@ -55,8 +75,14 @@ export class DevotionalsController {
   @Roles(Role.ADMIN, Role.CREATOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Admin/Creator: List all devotionals including drafts' })
-  @ApiResponse({ status: 200, type: DevotionalsListResponseDto, description: 'Admin/creator devotionals returned successfully' })
+  @ApiOperation({
+    summary: 'Admin/Creator: List all devotionals including drafts',
+  })
+  @ApiResponse({
+    status: 200,
+    type: DevotionalsListResponseDto,
+    description: 'Admin/creator devotionals returned successfully',
+  })
   async findAllAdmin(@Query() query: ContentQueryDto) {
     return this.devotionalsService.findAll(query, false);
   }
@@ -66,7 +92,11 @@ export class DevotionalsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Create a new daily devotional' })
-  @ApiResponse({ status: 201, type: DevotionalResponseDto, description: 'Devotional created successfully' })
+  @ApiResponse({
+    status: 201,
+    type: DevotionalResponseDto,
+    description: 'Devotional created successfully',
+  })
   async create(
     @CurrentUser('id') authorId: string,
     @Body() dto: CreateDevotionalDto,
@@ -79,7 +109,11 @@ export class DevotionalsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Update a devotional' })
-  @ApiResponse({ status: 200, type: DevotionalResponseDto, description: 'Devotional updated successfully' })
+  @ApiResponse({
+    status: 200,
+    type: DevotionalResponseDto,
+    description: 'Devotional updated successfully',
+  })
   async update(
     @Param('id') id: string,
     @CurrentUser() user: any,

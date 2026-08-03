@@ -16,7 +16,9 @@ export class LibraryService {
     const book = await this.prisma.book.findUnique({ where: { id: bookId } });
 
     if (!book || book.status !== ContentStatus.PUBLISHED) {
-      throw new NotFoundException(`Book with ID '${bookId}' not found or unavailable`);
+      throw new NotFoundException(
+        `Book with ID '${bookId}' not found or unavailable`,
+      );
     }
 
     const existingEntry = await this.prisma.userLibrary.findUnique({
@@ -141,7 +143,9 @@ export class LibraryService {
         lastReadAt: new Date(),
       },
       update: {
-        ...(dto.currentLocation !== undefined && { currentLocation: dto.currentLocation }),
+        ...(dto.currentLocation !== undefined && {
+          currentLocation: dto.currentLocation,
+        }),
         ...(dto.completionPercentage !== undefined && {
           completionPercentage: dto.completionPercentage,
         }),

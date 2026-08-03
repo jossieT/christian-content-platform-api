@@ -7,7 +7,10 @@ export class UpdateReadingProgressDto {
   @IsOptional()
   currentLocation?: string;
 
-  @ApiPropertyOptional({ example: 45.5, description: 'Percentage completion (0 - 100)' })
+  @ApiPropertyOptional({
+    example: 45.5,
+    description: 'Percentage completion (0 - 100)',
+  })
   @IsNumber()
   @Min(0)
   @Max(100)

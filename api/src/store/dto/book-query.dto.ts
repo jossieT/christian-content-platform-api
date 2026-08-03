@@ -1,7 +1,14 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { BookFormat, ContentStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class BookQueryDto {
   @ApiPropertyOptional({ default: 0 })

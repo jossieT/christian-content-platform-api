@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ContentStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { BookQueryDto } from './dto/book-query.dto';
@@ -13,9 +17,13 @@ export class BooksService {
     const slug = await this.generateUniqueSlug(dto.title);
 
     if (dto.isbn) {
-      const existingIsbn = await this.prisma.book.findUnique({ where: { isbn: dto.isbn } });
+      const existingIsbn = await this.prisma.book.findUnique({
+        where: { isbn: dto.isbn },
+      });
       if (existingIsbn) {
-        throw new ConflictException(`Book with ISBN '${dto.isbn}' already exists`);
+        throw new ConflictException(
+          `Book with ISBN '${dto.isbn}' already exists`,
+        );
       }
     }
 
@@ -33,7 +41,9 @@ export class BooksService {
         format: dto.format,
         fileUrl: dto.fileUrl,
         status: dto.status ?? ContentStatus.DRAFT,
-        ...(dto.categoryId && { category: { connect: { id: dto.categoryId } } }),
+        ...(dto.categoryId && {
+          category: { connect: { id: dto.categoryId } },
+        }),
       },
       include: { category: true },
     });
@@ -43,7 +53,11 @@ export class BooksService {
     const { skip, take, category, format, isFree, search, status } = query;
 
     const where: Prisma.BookWhereInput = {
-      ...(isPublicOnly ? { status: ContentStatus.PUBLISHED } : status ? { status } : {}),
+      ...(isPublicOnly
+        ? { status: ContentStatus.PUBLISHED }
+        : status
+          ? { status }
+          : {}),
       ...(format && { format }),
       ...(isFree !== undefined && { isFree }),
       ...(category && {
@@ -107,14 +121,18 @@ export class BooksService {
         ...(dto.publisher !== undefined && { publisher: dto.publisher }),
         ...(dto.isbn !== undefined && { isbn: dto.isbn }),
         ...(dto.description && { description: dto.description }),
-        ...(dto.coverImageUrl !== undefined && { coverImageUrl: dto.coverImageUrl }),
+        ...(dto.coverImageUrl !== undefined && {
+          coverImageUrl: dto.coverImageUrl,
+        }),
         ...(dto.price !== undefined && { price: dto.price }),
         ...(dto.isFree !== undefined && { isFree: dto.isFree }),
         ...(dto.format && { format: dto.format }),
         ...(dto.fileUrl !== undefined && { fileUrl: dto.fileUrl }),
         ...(dto.status && { status: dto.status }),
         ...(dto.categoryId !== undefined && {
-          category: dto.categoryId ? { connect: { id: dto.categoryId } } : { disconnect: true },
+          category: dto.categoryId
+            ? { connect: { id: dto.categoryId } }
+            : { disconnect: true },
         }),
       },
       include: { category: true },

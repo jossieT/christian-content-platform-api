@@ -7,7 +7,11 @@ import { CategoriesService } from './services/categories.service';
 import { DevotionalsService } from './services/devotionals.service';
 
 @Module({
-  controllers: [CategoriesController, ArticlesController, DevotionalsController],
+  controllers: [
+    CategoriesController,
+    ArticlesController,
+    DevotionalsController,
+  ],
   providers: [CategoriesService, ArticlesService, DevotionalsService],
   exports: [CategoriesService, ArticlesService, DevotionalsService],
 })

@@ -30,8 +30,10 @@ enum BookFormat {
 
 model User {
   id              String            @id @default(uuid())
-  email           String            @unique
-  passwordHash    String
+  email           String?           @unique
+  passwordHash    String?
+  phoneNumber     String?           @unique
+  isPhoneVerified Boolean           @default(false)
   firstName       String?
   lastName        String?
   role            Role              @default(USER)
@@ -48,6 +50,7 @@ model User {
   readingProgress ReadingProgress[]
 
   @@index([email])
+  @@index([phoneNumber])
   @@map("users")
 }
 
@@ -206,4 +209,34 @@ model ReadingProgress {
   @@unique([userId, bookId])
   @@index([userId])
   @@map("reading_progresses")
+}
+
+model OtpVerification {
+  id          String   @id @default(uuid())
+  phoneNumber String
+  otpHash     String
+  attempts    Int      @default(0)
+  maxAttempts Int      @default(3)
+  expiresAt   DateTime
+  isUsed      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([phoneNumber, isUsed, expiresAt])
+  @@map("otp_verifications")
+}
+
+model AuthAuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  event      String
+  provider   String
+  identifier String?
+  ipAddress  String?
+  userAgent  String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([provider, event])
+  @@map("auth_audit_logs")
 }

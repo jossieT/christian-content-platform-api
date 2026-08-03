@@ -36,11 +36,17 @@ export class ArticlesService {
         status,
         publishedAt,
         author: { connect: { id: authorId } },
-        ...(dto.categoryId && { category: { connect: { id: dto.categoryId } } }),
-        ...(tagConnectOrCreate && { tags: { connectOrCreate: tagConnectOrCreate } }),
+        ...(dto.categoryId && {
+          category: { connect: { id: dto.categoryId } },
+        }),
+        ...(tagConnectOrCreate && {
+          tags: { connectOrCreate: tagConnectOrCreate },
+        }),
       },
       include: {
-        author: { select: { id: true, firstName: true, lastName: true, email: true } },
+        author: {
+          select: { id: true, firstName: true, lastName: true, email: true },
+        },
         category: true,
         tags: true,
       },
@@ -51,7 +57,11 @@ export class ArticlesService {
     const { skip, take, category, tag, search, status } = query;
 
     const where: Prisma.ArticleWhereInput = {
-      ...(isPublicOnly ? { status: ContentStatus.PUBLISHED } : status ? { status } : {}),
+      ...(isPublicOnly
+        ? { status: ContentStatus.PUBLISHED }
+        : status
+          ? { status }
+          : {}),
       ...(category && {
         category: {
           OR: [{ id: category }, { slug: category }],
@@ -118,7 +128,12 @@ export class ArticlesService {
     return article;
   }
 
-  async update(id: string, userId: string, dto: UpdateArticleDto, isAdmin = false) {
+  async update(
+    id: string,
+    userId: string,
+    dto: UpdateArticleDto,
+    isAdmin = false,
+  ) {
     const article = await this.prisma.article.findUnique({ where: { id } });
 
     if (!article) {
@@ -126,7 +141,9 @@ export class ArticlesService {
     }
 
     if (!isAdmin && article.authorId !== userId) {
-      throw new ForbiddenException('You do not have permission to modify this article');
+      throw new ForbiddenException(
+        'You do not have permission to modify this article',
+      );
     }
 
     const status = dto.status ?? article.status;
@@ -141,11 +158,15 @@ export class ArticlesService {
         ...(dto.title && { title: dto.title }),
         ...(dto.summary !== undefined && { summary: dto.summary }),
         ...(dto.content && { content: dto.content }),
-        ...(dto.coverImageUrl !== undefined && { coverImageUrl: dto.coverImageUrl }),
+        ...(dto.coverImageUrl !== undefined && {
+          coverImageUrl: dto.coverImageUrl,
+        }),
         status,
         publishedAt,
         ...(dto.categoryId !== undefined && {
-          category: dto.categoryId ? { connect: { id: dto.categoryId } } : { disconnect: true },
+          category: dto.categoryId
+            ? { connect: { id: dto.categoryId } }
+            : { disconnect: true },
         }),
       },
       include: {
@@ -164,7 +185,9 @@ export class ArticlesService {
     }
 
     if (!isAdmin && article.authorId !== userId) {
-      throw new ForbiddenException('You do not have permission to delete this article');
+      throw new ForbiddenException(
+        'You do not have permission to delete this article',
+      );
     }
 
     await this.prisma.article.delete({ where: { id } });

@@ -23,7 +23,9 @@ export class DevotionalsService {
     });
 
     if (existingForDate) {
-      throw new ConflictException(`A devotional already exists for date ${dto.date}`);
+      throw new ConflictException(
+        `A devotional already exists for date ${dto.date}`,
+      );
     }
 
     const slug = await this.generateUniqueSlug(dto.title);
@@ -40,7 +42,9 @@ export class DevotionalsService {
         date: devotionalDate,
         status,
         author: { connect: { id: authorId } },
-        ...(dto.categoryId && { category: { connect: { id: dto.categoryId } } }),
+        ...(dto.categoryId && {
+          category: { connect: { id: dto.categoryId } },
+        }),
       },
       include: {
         author: { select: { id: true, firstName: true, lastName: true } },
@@ -94,7 +98,11 @@ export class DevotionalsService {
     const { skip, take, category, search, status } = query;
 
     const where: Prisma.DevotionalWhereInput = {
-      ...(isPublicOnly ? { status: ContentStatus.PUBLISHED } : status ? { status } : {}),
+      ...(isPublicOnly
+        ? { status: ContentStatus.PUBLISHED }
+        : status
+          ? { status }
+          : {}),
       ...(category && {
         category: {
           OR: [{ id: category }, { slug: category }],
@@ -131,15 +139,24 @@ export class DevotionalsService {
     };
   }
 
-  async update(id: string, userId: string, dto: UpdateDevotionalDto, isAdmin = false) {
-    const devotional = await this.prisma.devotional.findUnique({ where: { id } });
+  async update(
+    id: string,
+    userId: string,
+    dto: UpdateDevotionalDto,
+    isAdmin = false,
+  ) {
+    const devotional = await this.prisma.devotional.findUnique({
+      where: { id },
+    });
 
     if (!devotional) {
       throw new NotFoundException(`Devotional with ID '${id}' not found`);
     }
 
     if (!isAdmin && devotional.authorId !== userId) {
-      throw new ForbiddenException('You do not have permission to modify this devotional');
+      throw new ForbiddenException(
+        'You do not have permission to modify this devotional',
+      );
     }
 
     let dateObj: Date | undefined;
@@ -152,14 +169,20 @@ export class DevotionalsService {
       where: { id },
       data: {
         ...(dto.title && { title: dto.title }),
-        ...(dto.scriptureReference && { scriptureReference: dto.scriptureReference }),
-        ...(dto.scriptureText !== undefined && { scriptureText: dto.scriptureText }),
+        ...(dto.scriptureReference && {
+          scriptureReference: dto.scriptureReference,
+        }),
+        ...(dto.scriptureText !== undefined && {
+          scriptureText: dto.scriptureText,
+        }),
         ...(dto.content && { content: dto.content }),
         ...(dto.prayer !== undefined && { prayer: dto.prayer }),
         ...(dateObj && { date: dateObj }),
         ...(dto.status && { status: dto.status }),
         ...(dto.categoryId !== undefined && {
-          category: dto.categoryId ? { connect: { id: dto.categoryId } } : { disconnect: true },
+          category: dto.categoryId
+            ? { connect: { id: dto.categoryId } }
+            : { disconnect: true },
         }),
       },
       include: {
@@ -170,14 +193,18 @@ export class DevotionalsService {
   }
 
   async delete(id: string, userId: string, isAdmin = false) {
-    const devotional = await this.prisma.devotional.findUnique({ where: { id } });
+    const devotional = await this.prisma.devotional.findUnique({
+      where: { id },
+    });
 
     if (!devotional) {
       throw new NotFoundException(`Devotional with ID '${id}' not found`);
     }
 
     if (!isAdmin && devotional.authorId !== userId) {
-      throw new ForbiddenException('You do not have permission to delete this devotional');
+      throw new ForbiddenException(
+        'You do not have permission to delete this devotional',
+      );
     }
 
     await this.prisma.devotional.delete({ where: { id } });

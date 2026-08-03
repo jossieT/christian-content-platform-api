@@ -33,7 +33,10 @@ export class ContentQueryDto {
   @IsOptional()
   search?: string;
 
-  @ApiPropertyOptional({ enum: ContentStatus, description: 'Content status filter (Admin/Author only)' })
+  @ApiPropertyOptional({
+    enum: ContentStatus,
+    description: 'Content status filter (Admin/Author only)',
+  })
   @IsEnum(ContentStatus)
   @IsOptional()
   status?: ContentStatus;

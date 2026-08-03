@@ -7,7 +7,13 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -25,14 +31,20 @@ export class UsersController {
 
   @Get('profile')
   @ApiOperation({ summary: 'Get current user profile and account details' })
-  @ApiResponse({ status: 200, description: 'User profile returned successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'User profile returned successfully',
+  })
   async getProfile(@CurrentUser('id') userId: string) {
     return this.usersService.findById(userId);
   }
 
   @Patch('profile')
   @ApiOperation({ summary: 'Update profile information' })
-  @ApiResponse({ status: 200, description: 'User profile updated successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'User profile updated successfully',
+  })
   async updateProfile(
     @CurrentUser('id') userId: string,
     @Body() dto: UpdateUserProfileDto,

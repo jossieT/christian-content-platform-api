@@ -18,7 +18,9 @@ export class CreateDevotionalDto {
   @IsOptional()
   scriptureText?: string;
 
-  @ApiProperty({ example: 'Today we reflect on what it means to stay connected to Christ...' })
+  @ApiProperty({
+    example: 'Today we reflect on what it means to stay connected to Christ...',
+  })
   @IsString()
   @IsNotEmpty()
   content!: string;

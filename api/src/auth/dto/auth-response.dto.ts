@@ -5,8 +5,11 @@ export class UserPayloadDto {
   @ApiProperty()
   id!: string;
 
-  @ApiProperty()
-  email!: string;
+  @ApiProperty({ required: false })
+  email?: string | null;
+
+  @ApiProperty({ required: false })
+  phoneNumber?: string | null;
 
   @ApiProperty({ required: false })
   firstName?: string | null;

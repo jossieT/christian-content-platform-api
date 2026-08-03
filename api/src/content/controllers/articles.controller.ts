@@ -9,14 +9,22 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
-import { ArticleResponseDto, ArticlesListResponseDto } from '../dto/article-response.dto';
+import {
+  ArticleResponseDto,
+  ArticlesListResponseDto,
+} from '../dto/article-response.dto';
 import { ContentQueryDto } from '../dto/content-query.dto';
 import { CreateArticleDto } from '../dto/create-article.dto';
 import { UpdateArticleDto } from '../dto/update-article.dto';
@@ -30,7 +38,11 @@ export class ArticlesController {
   @Public()
   @Get()
   @ApiOperation({ summary: 'List published Christian articles (Public)' })
-  @ApiResponse({ status: 200, type: ArticlesListResponseDto, description: 'Published articles returned successfully' })
+  @ApiResponse({
+    status: 200,
+    type: ArticlesListResponseDto,
+    description: 'Published articles returned successfully',
+  })
   async findAllPublished(@Query() query: ContentQueryDto) {
     return this.articlesService.findAll(query, true);
   }
@@ -39,8 +51,14 @@ export class ArticlesController {
   @Roles(Role.ADMIN, Role.CREATOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Admin/Creator: List all articles including drafts' })
-  @ApiResponse({ status: 200, type: ArticlesListResponseDto, description: 'Admin/creator articles returned successfully' })
+  @ApiOperation({
+    summary: 'Admin/Creator: List all articles including drafts',
+  })
+  @ApiResponse({
+    status: 200,
+    type: ArticlesListResponseDto,
+    description: 'Admin/creator articles returned successfully',
+  })
   async findAllAdmin(@Query() query: ContentQueryDto) {
     return this.articlesService.findAll(query, false);
   }
@@ -48,7 +66,11 @@ export class ArticlesController {
   @Public()
   @Get(':slug')
   @ApiOperation({ summary: 'Get published article details by slug' })
-  @ApiResponse({ status: 200, type: ArticleResponseDto, description: 'Article returned successfully' })
+  @ApiResponse({
+    status: 200,
+    type: ArticleResponseDto,
+    description: 'Article returned successfully',
+  })
   async findBySlug(@Param('slug') slug: string) {
     return this.articlesService.findBySlug(slug);
   }
@@ -58,7 +80,11 @@ export class ArticlesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Create a new article draft or published article' })
-  @ApiResponse({ status: 201, type: ArticleResponseDto, description: 'Article created successfully' })
+  @ApiResponse({
+    status: 201,
+    type: ArticleResponseDto,
+    description: 'Article created successfully',
+  })
   async create(
     @CurrentUser('id') authorId: string,
     @Body() dto: CreateArticleDto,
@@ -71,7 +97,11 @@ export class ArticlesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Update an article' })
-  @ApiResponse({ status: 200, type: ArticleResponseDto, description: 'Article updated successfully' })
+  @ApiResponse({
+    status: 200,
+    type: ArticleResponseDto,
+    description: 'Article updated successfully',
+  })
   async update(
     @Param('id') id: string,
     @CurrentUser() user: any,

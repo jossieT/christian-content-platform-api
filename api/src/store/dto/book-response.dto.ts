@@ -23,7 +23,8 @@ export class BookResponseDto {
   @ApiProperty({ enum: ContentStatus }) status!: ContentStatus;
   @ApiProperty() createdAt!: Date;
   @ApiProperty() updatedAt!: Date;
-  @ApiPropertyOptional({ type: CategorySummaryDto }) category?: CategorySummaryDto | null;
+  @ApiPropertyOptional({ type: CategorySummaryDto })
+  category?: CategorySummaryDto | null;
 }
 
 export class BooksListResponseDto {

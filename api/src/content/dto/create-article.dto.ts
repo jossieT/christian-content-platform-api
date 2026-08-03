@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ContentStatus } from '@prisma/client';
-import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateArticleDto {
   @ApiProperty({ example: 'Understanding Grace in the New Testament' })
@@ -8,7 +14,10 @@ export class CreateArticleDto {
   @IsNotEmpty()
   title!: string;
 
-  @ApiPropertyOptional({ example: 'An in-depth exploration of biblical grace and its practical application.' })
+  @ApiPropertyOptional({
+    example:
+      'An in-depth exploration of biblical grace and its practical application.',
+  })
   @IsString()
   @IsOptional()
   summary?: string;
@@ -33,7 +42,10 @@ export class CreateArticleDto {
   @IsOptional()
   categoryId?: string;
 
-  @ApiPropertyOptional({ example: ['Grace', 'Theology', 'New Testament'], type: [String] })
+  @ApiPropertyOptional({
+    example: ['Grace', 'Theology', 'New Testament'],
+    type: [String],
+  })
   @IsArray()
   @IsString({ each: true })
   @IsOptional()

@@ -7,7 +7,12 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { LibraryEntryResponseDto } from './dto/library-response.dto';
@@ -23,14 +28,24 @@ export class LibraryController {
 
   @Get()
   @ApiOperation({ summary: 'Get current user personal library bookshelf' })
-  @ApiResponse({ status: 200, type: [LibraryEntryResponseDto], description: 'User bookshelf returned successfully' })
+  @ApiResponse({
+    status: 200,
+    type: [LibraryEntryResponseDto],
+    description: 'User bookshelf returned successfully',
+  })
   async getBookshelf(@CurrentUser('id') userId: string) {
     return this.libraryService.getUserBookshelf(userId);
   }
 
   @Post('claim/:bookId')
-  @ApiOperation({ summary: 'Claim or purchase a digital book into user library' })
-  @ApiResponse({ status: 201, type: LibraryEntryResponseDto, description: 'Book claimed into the user library successfully' })
+  @ApiOperation({
+    summary: 'Claim or purchase a digital book into user library',
+  })
+  @ApiResponse({
+    status: 201,
+    type: LibraryEntryResponseDto,
+    description: 'Book claimed into the user library successfully',
+  })
   async claimBook(
     @CurrentUser('id') userId: string,
     @Param('bookId') bookId: string,
@@ -39,8 +54,13 @@ export class LibraryController {
   }
 
   @Get('progress/:bookId')
-  @ApiOperation({ summary: 'Get current reading progress and position for a book' })
-  @ApiResponse({ status: 200, description: 'Reading progress returned successfully' })
+  @ApiOperation({
+    summary: 'Get current reading progress and position for a book',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Reading progress returned successfully',
+  })
   async getProgress(
     @CurrentUser('id') userId: string,
     @Param('bookId') bookId: string,
@@ -50,7 +70,10 @@ export class LibraryController {
 
   @Patch('progress/:bookId')
   @ApiOperation({ summary: 'Update reading progress location and percentage' })
-  @ApiResponse({ status: 200, description: 'Reading progress updated successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Reading progress updated successfully',
+  })
   async updateProgress(
     @CurrentUser('id') userId: string,
     @Param('bookId') bookId: string,

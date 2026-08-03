@@ -26,11 +26,13 @@ export class DevotionalResponseDto {
   @ApiProperty() createdAt!: Date;
   @ApiProperty() updatedAt!: Date;
   @ApiProperty({ type: AuthorSummaryDto }) author!: AuthorSummaryDto;
-  @ApiPropertyOptional({ type: CategorySummaryDto }) category?: CategorySummaryDto | null;
+  @ApiPropertyOptional({ type: CategorySummaryDto })
+  category?: CategorySummaryDto | null;
 }
 
 export class DevotionalsListResponseDto {
-  @ApiProperty({ type: [DevotionalResponseDto] }) items!: DevotionalResponseDto[];
+  @ApiProperty({ type: [DevotionalResponseDto] })
+  items!: DevotionalResponseDto[];
   @ApiProperty() total!: number;
   @ApiProperty() skip!: number;
   @ApiProperty() take!: number;
